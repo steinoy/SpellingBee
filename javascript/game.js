@@ -123,6 +123,9 @@ Game.OptionsMenu.draw = function() {
 		case (this.radio_palette_rg.prop('checked')):
 			color1 = U.RGB(S.RED2);
 			color2 = U.RGB(S.GREEN);
+		case (this.radio_palette_manual.prop('checked')):
+			color1 = U.RGB(S.MANUAL_COLOR_1);
+			color2 = U.RGB(S.MANUAL_COLOR_2);
 	}
 
 	//clear
@@ -164,6 +167,7 @@ Game.OptionsMenu.get_html_elements = function() {
 	this.radio_palette_rb = $("#pal_rad_1");
 	this.radio_palette_pt = $("#pal_rad_2");
 	this.radio_palette_rg = $("#pal_rad_3");
+	this.radio_palette_manual = $("#pal_rad_4");
 
 	$("#bounce_radio").buttonset();
 	this.radio_bounce_norm = $("#bounce_rad_1");
@@ -220,6 +224,9 @@ Game.OptionsMenu.update_background = function() {
 		case (this.radio_palette_rg.prop('checked')):
 			bg_color = S.ORANGE;
 			break;
+		case (this.radio_palette_manual.prop('checked')):
+			bg_color = S.MANUAL_COLOR_BG;
+			break;
 	}
 	this.options_menu.css("background", U.RGB(bg_color));
 	$("#viewport").css("background", U.RGB(bg_color));
@@ -231,7 +238,13 @@ Game.OptionsMenu.update_blendmode = function() {
 		case (this.radio_palette_rb.prop('checked')):
 			blend = "screen";
 			break;
-		case (this.radio_palette_pt.prop('checked') || this.radio_palette_rg.prop('checked')):
+		case (this.radio_palette_pt.prop('checked')):
+			blend = "multiply";
+			break;
+		case (this.radio_palette_rg.prop('checked')):
+			blend = "multiply";
+			break;
+		case (this.radio_palette_manual.prop('checked')):
 			blend = "multiply";
 			break;
 	}
@@ -266,6 +279,10 @@ Game.OptionsMenu.bind_events = function() {
 										this.update_background();
 										this.update_blendmode();
 												 }).bind(this));
+	this.radio_palette_manual.on("click", (function(){
+										this.update_background();
+										this.update_blendmode();
+												}).bind(this));
 	this.save_button.on("click", (function(){
 		this.save_form();
 		Scene.pop_scene();
@@ -280,6 +297,7 @@ Game.OptionsMenu.release_events = function() {
 	this.radio_palette_rb.off("click");
 	this.radio_palette_pt.off("click");
 	this.radio_palette_rg.off("click");
+	this.radio_palette_manual.off("click");
 	this.save_button.off("click");
 	this.cancel_button.off("click");
 };
@@ -321,6 +339,8 @@ Game.OptionsMenu.update_form = function() {
 			break;
 		case "redgreen":
 			this.radio_palette_rg.prop('checked', true);
+		case "manual":
+			this.radio_palette_manual.prop('checked', true);
 	}
 	$("#palette_radio").buttonset("refresh");
 
@@ -354,6 +374,9 @@ Game.OptionsMenu.save_form = function() {
 			break;
 		case (this.radio_palette_rg.prop('checked')):
 			S.PALETTE = "redgreen";
+			break;
+		case (this.radio_palette_manual.prop('checked')):
+			S.PALETTE = "manual";
 			break;
 	}
 
@@ -409,6 +432,7 @@ CalibrateMenu.get_html_elements = function(){
 	this.rb_button = $("#cal_rb_button").button();
 	this.pt_button = $("#cal_pt_button").button();
 	this.rg_button = $("#cal_rg_button").button();
+	this.manual_button = $("#cal_manual_button").button();
 	this.back_button = $("#cal_back_button").button();
 };
 
@@ -427,6 +451,9 @@ CalibrateMenu.bind_events = function(){
 	this.rg_button.on('click', function(){
 		Scene.push_scene("calibrate_dialog","rg");
 	});
+	this.manual_button.on('click', function(){
+		Scene.push_scene("manual_calibrate_dialog");
+	});
 	this.back_button.on('click', function(){
 		Scene.pop_scene();
 	});
@@ -437,6 +464,7 @@ CalibrateMenu.release_events = function(){
 	this.rb_button.off('click');
 	this.pt_button.off('click');
 	this.rg_button.off('click');
+	this.manual_button.off('click');
 	this.back_button.off('click');
 };
 //----------------------------------------------------------------------------------
@@ -455,6 +483,7 @@ Game.CalibrateDialog.entered = function(colors){
 
 Game.CalibrateDialog.get_html_elements = function(){
 	this.dialog = $("#cal_dialog");
+	this.dialog_manual = $("#cal_dialog_manual");
 	this.span = $("#calib_span");
 	this.slider = $("#calib_slider").slider();
 	this.button = $("#cal_button").button();
@@ -598,7 +627,35 @@ Game.CalibrateDialog.draw = function(){
 };
 //----------------------------------------------------------------------------------
 
+//Manual Calibrate Dialog Scene------------------------------------------------------------
+Game.ManualCalibrateDialog = Scene.new_scene("manual_calibrate_dialog");
 
+Game.ManualCalibrateDialog.entered = function(){
+	this.dialog = $("#cal_dialog_manual");
+	this.button = $("#cal_button_manual").button();
+
+	this.button.on("click", (function(){
+		S.MANUAL_COLOR_1 = this.hexToRgb($('#manual_color_1').val());
+		S.MANUAL_COLOR_2 = this.hexToRgb($('#manual_color_2').val());
+		S.MANUAL_COLOR_BG = this.hexToRgb($('#manual_color_bg').val());
+		this.dialog.hide();
+		Scene.pop_scene();
+	}).bind(this));
+
+	this.dialog.show();
+};
+
+Game.ManualCalibrateDialog.hexToRgb = function(hex){
+	var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+
+	return result ? [
+        parseInt(result[1], 16),
+        parseInt(result[2], 16),
+        parseInt(result[3], 16)
+	 ] : null;
+}
+
+//----------------------------------------------------------------------------------
 
 //Instructions Scene------------------------------------------------------------------------
 Game.Instructions = Scene.new_scene("instructions");
@@ -702,6 +759,11 @@ Game.Level.determine_palette = function(){
 		this.color1 = U.RGB(S.RED2);
 		this.color2 = U.RGB(S.GREEN);
 		this.background = U.RGB(S.ORANGE);
+	} else if (S.PALETTE === "manual") {
+		this.blendmode = "multiply";
+		this.color1 = U.RGB(S.MANUAL_COLOR_1);
+		this.color2 = U.RGB(S.MANUAL_COLOR_2);
+		this.background = U.RGB(S.MANUAL_COLOR_BG);
 	}
 };
 
@@ -1490,6 +1552,9 @@ Game.set_default_values = function(){
 		BLUE : [0,0,255],
 		WHITE : [255,255,255],
 		RED2 : [255,0,0],
+		MANUAL_COLOR_BG : [0,0,0],
+		MANUAL_COLOR_1 : [255,0,0],
+		MANUAL_COLOR_2 : [0,255,0],
 		ORB_FONT_SIZE : 8,
 		ORB_FONT : "monaco, Lucida Console, monospace",
 		ORB_LINE_WIDTH : 2,

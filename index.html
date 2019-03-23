@@ -94,6 +94,7 @@
 									<input type="radio" id="pal_rad_1" name="pal_rad"><label for="pal_rad_1"> <div class="rb_button"></div> </label>
 									<input type="radio" id="pal_rad_2" name="pal_rad"><label for="pal_rad_2"> <div class="pt_button"></div> </label>
 									<input type="radio" id="pal_rad_3" name="pal_rad"><label for="pal_rad_3"> <div class="rg_button"></div> </label>
+									<input type="radio" id="pal_rad_4" name="pal_rad"><label for="pal_rad_4"> <div class="manual_button"></div> </label>
 								</div>
 							</div>
 							<div id="bounce_radio" class="row_center options_radio">
@@ -117,6 +118,7 @@
 							<button id="cal_rb_button" type="button"><div class="rb_button"></div></button>
 							<button id="cal_pt_button" type="button"><div class="pt_button"></div></button>
 							<button id="cal_rg_button" type="button"><div class="rg_button"></div></button>
+							<button id="cal_manual_button" type="button"><div class="manual_button"></div></button>
 						</div>
 						<div>
 							<button id="cal_back_button" type="button">Back</button>
@@ -137,6 +139,27 @@
 							<div id="calib_slider"></div>
 						</div>
 						<button id="cal_button" type="button"></button>
+					</div>
+				</div>
+			</div>
+			<div id="cal_dialog_manual" class="column_center hidden">
+				<div class="plain_bg column_center">
+					<div id="cal_dialog_square" class="column_center">
+						<div class="column_center">
+							<div>Add the color for each lens manually:</div>
+						</div>
+						<div class="column_center">
+							<label for="">First lens:
+								<input type="text" placeholder="#ff0000" name="manual_color_1" id="manual_color_1">
+							</label>
+							<label for="">Second lens:
+								<input type="text" placeholder="#00ff00" name="manual_color_2" id="manual_color_2">
+							</label>
+							<label for="">Background:
+								<input type="text" placeholder="#000000" name="manual_color_bg" id="manual_color_bg">
+							</label>
+						</div>
+						<button id="cal_button_manual" type="button">Save</button>
 					</div>
 				</div>
 			</div>

@@ -146,12 +146,8 @@ body {
 	padding: 6px;
 }
 
-.options_radio div {
-	display: inline-block;
-}
-
 #palette_radio label span, #bounce_radio label span {
-	padding: 0.4em 0.6em 0.2em 0.6em;
+	padding: 0.6em;
 }
 
 .rb_button {
@@ -185,6 +181,18 @@ body {
 						rgb(255, 127, 0),
 						rgb(0,127,0)
 	);
+}
+
+.manual_button {
+	height: 41px;
+	width: 41px;
+	text-align:center;
+	line-height:42px;
+	font-size:11px;
+}
+
+.manual_button:after {
+	content: 'Manual';
 }
 
 .options_spinner {
